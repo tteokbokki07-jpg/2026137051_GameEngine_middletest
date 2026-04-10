@@ -12,20 +12,63 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private float moveInput;
 
+    public Animator animator;
+    private SpriteRenderer spriteRenderer;
+    private bool facingRight = true;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        // 스프라이트의 flipX 상태를 기준으로 초기 방향 설정
+        facingRight = spriteRenderer == null ? true : !spriteRenderer.flipX;
     }
+    private void SetFacingRight(bool right)
+    {
+        facingRight = right;
+        spriteRenderer.flipX = !right;
+    }
+
     void Update()
     {
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+
+        // 좌우 이동에 따라 스프라이트 플립
+        float horizontal = rb.linearVelocity.x;
+        if (Mathf.Abs(horizontal) > 0.01f)
+        {
+            if (horizontal < 0 && !facingRight)
+            {
+                SetFacingRight(true);
+            }
+            else if (horizontal > 0 && facingRight)
+            {
+                SetFacingRight(false);
+            }
+        }
+
+        // 이동상태 판단 : 실제 속도 기준 판정
+        bool isMoving = Mathf.Abs(rb.linearVelocity.x) > 0.01f && isGrounded;
+        animator.SetBool("Move", isMoving);
+
+        // 점프상태 판단 (상승 / 하강 분리)
+        const float vertThreshold = 0.01f;
+        float vertical = rb.linearVelocity.y;
+        bool isJumpUp = !isGrounded && vertical > vertThreshold;     // 위로 올라갈 때
+        bool isJumpDown = !isGrounded && vertical <= -vertThreshold;  // 아래로 떨어질 때
+
+        animator.SetBool("Jump_up", isJumpUp);
+        animator.SetBool("Jump_down", isJumpDown);
     }
+
     public void OnMove(InputValue value)
     {
         Vector2 input = value.Get<Vector2>();
         moveInput = input.x;
-    }    
+    }
+
     public void OnJump(InputValue value)
     {
         if (value.isPressed && isGrounded)
@@ -35,5 +78,5 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
 }
+
