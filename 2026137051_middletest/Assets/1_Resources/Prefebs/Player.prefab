@@ -150,10 +150,9 @@ GameObject:
   - component: {fileID: 1595891063817315903}
   - component: {fileID: 2763100614796069397}
   - component: {fileID: 2664030460589010920}
-  - component: {fileID: 4038136225540499318}
+  - component: {fileID: 5354448457312302561}
   - component: {fileID: 7903530813279607828}
   - component: {fileID: 1062411218433701417}
-  - component: {fileID: 5354448457312302561}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -302,24 +301,35 @@ MonoBehaviour:
   sprintActionName: Sprint
   dashTriggerName: Dash
   dashBoolName: Dash_hold
-  debugLogs: 0
---- !u!114 &4038136225540499318
-MonoBehaviour:
+  afterimagePrefab: {fileID: 0}
+  afterSpawnInterval: 0.05
+  LifeTime: 0.5
+  afterColor: {r: 0.5, g: 0.5, b: 1, a: 0.7}
+  sortingOrderOffset: -1
+  boostMove: 0
+  boostMovevalue: 1.5
+--- !u!95 &5354448457312302561
+Animator:
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3953677274273025115}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56dbe14f22f9ad345893e85d04ad4e95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Afterimage
-  Player: {fileID: 4876933652835562411}
-  copyPlayerPrefab: {fileID: 8571063632497316418, guid: ecb6ddd2ef4db5843abd4038e7995571, type: 3}
-  sprintActionReference: {fileID: -7471211009204490832, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  destroyOnSprintEnd: 1
-  debugLogs: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: fab1e1d5f3395c246a83d8f7bed9ac30, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!50 &7903530813279607828
 Rigidbody2D:
   serializedVersion: 5
@@ -385,7 +395,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.0000813, y: 1}
+    oldSize: {x: 1.1112014, y: 1.1111112}
     newSize: {x: 0.22, y: 0.24}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -393,28 +403,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.30556402, y: 0.7258149}
   m_EdgeRadius: 0
---- !u!95 &5354448457312302561
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3953677274273025115}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: fab1e1d5f3395c246a83d8f7bed9ac30, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5149126684082891145
 GameObject:
   m_ObjectHideFlags: 0
