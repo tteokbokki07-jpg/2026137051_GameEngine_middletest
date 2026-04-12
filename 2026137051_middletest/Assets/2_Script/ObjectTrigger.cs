@@ -27,7 +27,9 @@ public class ObjectTrigger : MonoBehaviour
         if (HasTag(other, "Barrier"))
         {
             if (spawnpoint == null) return;
-            transform.position = spawnpoint.position;
+            Vector3 newPos = spawnpoint.position;
+            newPos.z = transform.position.z; // z값은 현재 플레이어의 z값 유지
+            transform.position = newPos;
             transform.rotation = spawnpoint.rotation;
 
             if (rb != null)
@@ -41,11 +43,12 @@ public class ObjectTrigger : MonoBehaviour
         // Checkpoint: spawnpoint를 체크포인트 위치로 이동
         if (HasTag(other, "Checkpoint"))
         {
-            // 우선 other의 transform을 checkpoint로 사용하고 spawnpoint를 갱신
             checkpoint = other.transform;
             if (spawnpoint != null)
             {
-                spawnpoint.position = checkpoint.position;
+                Vector3 newPos = checkpoint.position;
+                newPos.z = spawnpoint.position.z; // spawnpoint의 기존 z값 유지
+                spawnpoint.position = newPos;
                 spawnpoint.rotation = checkpoint.rotation;
             }
             else

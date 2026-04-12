@@ -16,9 +16,6 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private bool facingRight = true;
 
-    // 정점 진입 감지용 이전 상태
-    private bool prevIsJumpTop = false;
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -65,13 +62,6 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Jump_up", isJumpUp);
         animator.SetBool("Jump_top", isJumptop);
         animator.SetBool("Jump_down", isJumpDown);
-        // 정점에 진입했을 때 한 번만 로그 출력
-
-        if (isJumptop && !prevIsJumpTop)
-        {
-            Debug.Log("점프 정점 진입");
-        }
-        prevIsJumpTop = isJumptop; ;
     }
 
     public void OnMove(InputValue value)
