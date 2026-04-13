@@ -4,6 +4,16 @@ public class ObjectTrigger : MonoBehaviour
 {
     public Transform spawnpoint;
     public Transform checkpoint;
+    [Header("Enemy Push")]
+    public float enemyPushForce = 5f; // 적에게 밀려날 때 적용할 임펄스 크기
+    [Header("Item")]
+    public bool itemMove = false;    //아이템 이동속도 배율 적용
+    public float itemMovevalue = 1.5f; //적용할 배율(1.5 : 50%)
+    public bool itemJump = false;    //아이템 점프력 배율 적용
+    public float itemJumpvalue = 1.25f; //적용할 배율
+    public bool itemSheld = false;    //아이템 무적
+
+
     private Rigidbody2D rb;
 
     private void Awake()
@@ -11,7 +21,7 @@ public class ObjectTrigger : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private bool HasTag(Collider2D other, string tag)
+    private bool HasTag(Collider2D other, string tag) // 다른 콜라이더가 특정 태그를 가지고 있는지 확인하는 헬퍼 메서드
     {
         if (other == null) return false;
         if (other.CompareTag(tag)) return true;
@@ -23,6 +33,12 @@ public class ObjectTrigger : MonoBehaviour
     {
         if (other == null) return;
 
+        // Enemy: 적이 닿으면 플레이어(this 오브젝트)를 적으로부터 반대 방향으로 밀어냄
+        if (HasTag(other, "Enemy"))
+        {
+            Debug.Log("Enemy감지");
+        }
+
         // Barrier: 플레이어(이 스크립트가 붙은 오브젝트)를 spawnpoint로 이동
         if (HasTag(other, "Barrier"))
         {
@@ -31,12 +47,6 @@ public class ObjectTrigger : MonoBehaviour
             newPos.z = transform.position.z; // z값은 현재 플레이어의 z값 유지
             transform.position = newPos;
             transform.rotation = spawnpoint.rotation;
-
-            if (rb != null)
-            {
-                rb.linearVelocity = Vector2.zero;
-                rb.angularVelocity = 0f;
-            }
             return;
         }
 
@@ -63,7 +73,6 @@ public class ObjectTrigger : MonoBehaviour
         if (HasTag(other, "Finish"))
         {
             Debug.Log("Finish reached");
-            return;
         }
     }
 }

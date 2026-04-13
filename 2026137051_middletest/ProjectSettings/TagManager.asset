@@ -7,6 +7,11 @@ TagManager:
   - Barrier
   - Spawnpoint
   - Checkpoint
+  - Item_Sheld
+  - Item_Speed
+  - Item_Jump
+  - Item_Mission
+  - Enemy
   layers:
   - Default
   - TransparentFX

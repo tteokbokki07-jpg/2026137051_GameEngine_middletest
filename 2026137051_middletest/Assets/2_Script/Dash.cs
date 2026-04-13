@@ -237,5 +237,5 @@ public class Dash : MonoBehaviour
             pc.moveSpeed = originalMoveSpeed;
             moveSpeedBoosted = false;
         }
-    }
-} //플레이어가 공중에서 대시를 사용할 때 잔상을 생성하고, 이동속도를 일시적으로 상승시키는 기능을 구현합니다.
+    }//플레이어가 공중에서 대시를 사용할 때 잔상을 생성하고, 이동속도를 일시적으로 상승시키는 기능을 구현합니다.
+} 
