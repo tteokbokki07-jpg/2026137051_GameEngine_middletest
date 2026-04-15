@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ObjectTrigger : MonoBehaviour
@@ -9,16 +10,21 @@ public class ObjectTrigger : MonoBehaviour
     [Header("Item")]
     public bool itemMove = false;    //아이템 이동속도 배율 적용
     public float itemMovevalue = 1.5f; //적용할 배율(1.5 : 50%)
+    private float originalitemMoveSpeed = 0f;
+    private bool itemMoveBoosted = false;
+
     public bool itemJump = false;    //아이템 점프력 배율 적용
     public float itemJumpvalue = 1.25f; //적용할 배율
     public bool itemSheld = false;    //아이템 무적
 
 
     private Rigidbody2D rb;
+    private PlayerController pc;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        pc = GetComponent<PlayerController>();
     }
 
     private bool HasTag(Collider2D other, string tag) // 다른 콜라이더가 특정 태그를 가지고 있는지 확인하는 헬퍼 메서드
@@ -74,5 +80,46 @@ public class ObjectTrigger : MonoBehaviour
         {
             Debug.Log("Finish reached");
         }
+
+        if (HasTag(other, "Item_Sheld"))
+        {
+            Debug.Log("Item_Sheld");
+        }
+
+        if (HasTag(other, "Item_Speed"))
+        {
+            Debug.Log("Item_Speed");
+            itemMove = true;
+            // 이동속도 상승 옵션
+            if (itemMove && pc != null && !itemMoveBoosted)
+            {
+                originalitemMoveSpeed = pc.moveSpeed;
+                pc.moveSpeed = originalitemMoveSpeed * itemMovevalue;
+                itemMoveBoosted = true;
+                return;
+                //Invoke(nameof(RestoreMoveSpeed), 5f); // 5초 후에 이동속도 복구
+            }
+        }
+
+
+        if (HasTag(other, "Item_Jump"))
+        {
+            Debug.Log("Item_Jump");
+        }
+
+        if (HasTag(other, "Item_Mission"))
+        {
+            Debug.Log("Item_Mission");
+        }
+
     }
+
+    //private object RestoreMoveSpeed()
+    //{
+    //    if (itemMoveBoosted && pc != null)
+    //    {
+    //        pc.moveSpeed = originalitemMoveSpeed;
+    //        itemMoveBoosted = false;
+    //    }
+    //}
 }
