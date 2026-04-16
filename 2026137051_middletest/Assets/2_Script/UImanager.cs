@@ -7,6 +7,14 @@ public class UImanager : MonoBehaviour
     {
         SceneManager.LoadScene("Making_1");
     }
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
+
+
+
 
 
 }

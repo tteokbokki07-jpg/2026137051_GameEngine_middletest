@@ -20,6 +20,7 @@ public class Dash : MonoBehaviour
     [Header("Move Speed Boost")]
     public bool boostMove = false;    //대시중 이동속도 배율 적용
     public float boostMovevalue = 1.5f; //적용할 배율(1.5 : 50%)
+    public bool isBoost = false; //대시를 하고있는가
 
     private PlayerInput playerInput;
     private InputAction sprintAction;
@@ -66,6 +67,7 @@ public class Dash : MonoBehaviour
             if (grounded)
             {
                 airJumpUsed = false;
+                isBoost = false;
                 RestoreMoveSpeedIfNeeded();
             }
         }
@@ -74,7 +76,7 @@ public class Dash : MonoBehaviour
     private void OnSprintStarted(InputAction.CallbackContext ctx)
     {
         // 애니메이터 호출은 유지
-        if (animator != null)
+        if (animator != null && isBoost == false)
         {
             animator.SetTrigger(dashTriggerName);
         }
@@ -84,10 +86,15 @@ public class Dash : MonoBehaviour
         if (pc.groundCheck != null)
             grounded = Physics2D.OverlapCircle(pc.groundCheck.position, 0.2f, pc.groundLayer);
         // 바닥에서는 대쉬 불가
-        if (grounded) return;
+        if (grounded)
+        {
+            animator.ResetTrigger(dashTriggerName);
+            return;
+        }
         // 공중에서 한 번만 동작
         if (!airJumpUsed)
         {
+            isBoost = true;
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             rb.AddForce(Vector2.up * pc.jumpForce, ForceMode2D.Impulse);
             airJumpUsed = true;
