@@ -4,7 +4,6 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Barrier
   - Spawnpoint
   - Checkpoint
   - Item_Sheld
@@ -12,6 +11,8 @@ TagManager:
   - Item_Jump
   - Item_Mission
   - Enemy
+  - Boundary
+  - Obstacle
   layers:
   - Default
   - TransparentFX

@@ -1,3 +1,5 @@
+using System.Security;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,6 +9,12 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 5f;
     public Transform groundCheck;
     public LayerMask groundLayer;
+    [Header("clearmission")]
+    public int itemMission = 0;
+    public int missionCount = 0;
+
+    public Transform spawnpoint;
+    public Transform checkpoint;
 
     private Rigidbody2D rb;
     private bool isGrounded;
@@ -34,20 +42,10 @@ public class PlayerController : MonoBehaviour
     {
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
-
-        // 좌우 이동에 따라 스프라이트 플립
-        float horizontal = rb.linearVelocity.x;
-        if (Mathf.Abs(horizontal) > 0.01f)
-        {
-            if (horizontal < 0 && !facingRight)
-            {
-                SetFacingRight(true);
-            }
-            else if (horizontal > 0 && facingRight)
-            {
-                SetFacingRight(false);
-            }
-        }
+        if (moveInput < 0)
+            transform.localScale = new Vector3(-1, 1, 1);
+        else if (moveInput > 0)
+            transform.localScale = new Vector3(1, 1, 1);
 
         // 이동상태 판단 : 실제 속도 기준 판정
         bool isMoving = Mathf.Abs(rb.linearVelocity.x) > 0.01f && isGrounded;
@@ -57,10 +55,8 @@ public class PlayerController : MonoBehaviour
         const float vertThreshold = 0.01f;
         float vertical = rb.linearVelocity.y;
         bool isJumpUp = !isGrounded && vertical > vertThreshold;                 // 상승 중
-        bool isJumptop = !isGrounded && Mathf.Abs(vertical) <= vertThreshold;   // 정점(최고점)
         bool isJumpDown = !isGrounded && vertical < -vertThreshold;              // 하강 중
         animator.SetBool("Jump_up", isJumpUp);
-        animator.SetBool("Jump_top", isJumptop);
         animator.SetBool("Jump_down", isJumpDown);
     }
 
@@ -79,5 +75,51 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Finish") && itemMission >= missionCount)
+        {
+            collision.GetComponent<Goalpoint>().MoveToNextLevel();
+        }
+
+        if (collision.CompareTag("Item_Mission"))
+        {
+            Debug.Log("Item_Mission");
+            itemMission++;
+            Destroy(collision.gameObject);
+        }
+
+        if (collision.CompareTag("Enemy"))
+        {
+            Vector3 newPos = spawnpoint.position;
+            newPos.z = transform.position.z; // z값은 현재 플레이어의 z값 유지
+            transform.position = newPos;
+            transform.rotation = spawnpoint.rotation;
+            return;
+        }
+        // Barrier: 플레이어를 spawnpoint로 이동
+        if (collision.CompareTag("Respawn"))
+        {
+            //if (spawnpoint == null) return;
+            Vector3 newPos = spawnpoint.position;
+            newPos.z = transform.position.z; // z값은 현재 플레이어의 z값 유지
+            transform.position = newPos;
+            transform.rotation = spawnpoint.rotation;
+            return;
+        }
+        // Checkpoint: spawnpoint를 체크포인트 위치로 이동
+        if (collision.CompareTag("Checkpoint"))
+        {
+            checkpoint = collision.transform;
+            if (spawnpoint != null)
+            {
+                Vector3 newPos = checkpoint.position;
+                newPos.z = spawnpoint.position.z; // spawnpoint의 기존 z값 유지
+                spawnpoint.position = newPos;
+                spawnpoint.rotation = checkpoint.rotation;
+                return;
+            }
+        }
+    }
 }
 

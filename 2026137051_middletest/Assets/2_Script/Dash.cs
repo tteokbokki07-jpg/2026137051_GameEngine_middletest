@@ -5,11 +5,10 @@ using UnityEngine.InputSystem;
 
 public class Dash : MonoBehaviour
 {
-    [Header("parimeter")]
+    [Header("parameter")]
     public Animator animator;
     public string sprintActionName = "Sprint";
     public string dashTriggerName = "Dash";
-    public string dashBoolName = "Dash_hold";
 
     [Header("Afterimage")]
     public GameObject afterimagePrefab;      // 있으면 프리팹 사용, 없으면 런타임으로 SpriteRenderer 생성
@@ -18,7 +17,7 @@ public class Dash : MonoBehaviour
     public Color afterColor = new Color(0.5f, 0.5f, 1f, 0.7f);
     public int sortingOrderOffset = -1;
 
-    [Header("Move Speed Boost (옵션)")]
+    [Header("Move Speed Boost")]
     public bool boostMove = false;    //대시중 이동속도 배율 적용
     public float boostMovevalue = 1.5f; //적용할 배율(1.5 : 50%)
 
@@ -32,7 +31,7 @@ public class Dash : MonoBehaviour
     private readonly List<GameObject> spawnedGhosts = new List<GameObject>();
     private bool airJumpUsed = false;
 
-    // 이동속도 복구 관련
+    // 이동속도 복구
     private float originalMoveSpeed = 0f;
     private bool moveSpeedBoosted = false;
 
@@ -43,7 +42,6 @@ public class Dash : MonoBehaviour
         sprintAction = playerInput.actions.FindAction(sprintActionName);
         if (sprintAction == null) return;
         sprintAction.started += OnSprintStarted;
-        sprintAction.canceled += OnSprintCanceled;
         pc = GetComponent<PlayerController>();
         rb = GetComponent<Rigidbody2D>();
         playerSR = GetComponentInChildren<SpriteRenderer>();
@@ -54,7 +52,6 @@ public class Dash : MonoBehaviour
         if (sprintAction != null)
         {
             sprintAction.started -= OnSprintStarted;
-            sprintAction.canceled -= OnSprintCanceled;
         }
         StopAfterimageCoroutine();
         RestoreMoveSpeedIfNeeded();
@@ -80,7 +77,6 @@ public class Dash : MonoBehaviour
         if (animator != null)
         {
             animator.SetTrigger(dashTriggerName);
-            animator.SetBool(dashBoolName, true);
         }
         if (pc == null || rb == null) return;  //안전 검사 코드
         // 착지 상태 판단
@@ -108,15 +104,7 @@ public class Dash : MonoBehaviour
             afterCoroutine = StartCoroutine(AfterimageUntilLandCoroutine());
         }
     }
-
-    private void OnSprintCanceled(InputAction.CallbackContext ctx)
-    {
-        if (animator != null)
-            animator.SetBool(dashBoolName, false);
-
-    }
-
-    // 대시 사용 직후 착지할 때까지 잔상 생성
+    
     private IEnumerator AfterimageUntilLandCoroutine()
     {
         float timer = 0f;
@@ -143,7 +131,7 @@ public class Dash : MonoBehaviour
             yield return null;
         }
         afterCoroutine = null;
-    }
+    } // 대시 사용 직후 착지할 때까지 잔상 생성
 
     private void StopAfterimageCoroutine()
     {
@@ -156,38 +144,21 @@ public class Dash : MonoBehaviour
 
     private void SpawnAfterimageOnce()
     {
-        if (playerSR == null || playerSR.sprite == null) return;
-        GameObject ghost;
-        if (afterimagePrefab != null)
-        {
-            ghost = Instantiate(afterimagePrefab, playerSR.transform.parent);
-            ghost.transform.localPosition = playerSR.transform.localPosition;
-            ghost.transform.localRotation = playerSR.transform.localRotation;
-            ghost.transform.localScale = playerSR.transform.localScale;
+        if (playerSR == null || playerSR.sprite == null || afterimagePrefab == null)
+            return;
 
-            // 프리팹 SpriteRenderer값 적용
-            var srs = ghost.GetComponentsInChildren<SpriteRenderer>(true);
-            foreach (var gs in srs)
-            {
-                gs.sprite = playerSR.sprite;
-                gs.flipX = playerSR.flipX;
-                gs.flipY = playerSR.flipY;
-                gs.sortingLayerID = playerSR.sortingLayerID;
-                gs.sortingOrder = playerSR.sortingOrder + sortingOrderOffset;
-                gs.sharedMaterial = playerSR.sharedMaterial;
-                gs.color = afterColor;
-            }
-        }
-        else
-        {
-            // 런타임으로 SpriteRenderer만 있는 오브젝트 생성
-            ghost = new GameObject("Afterimage_" + playerSR.sprite.name);
-            ghost.transform.SetParent(playerSR.transform.parent, false);
-            ghost.transform.localPosition = playerSR.transform.localPosition;
-            ghost.transform.localRotation = playerSR.transform.localRotation;
-            ghost.transform.localScale = playerSR.transform.localScale;
+        GameObject ghost = Instantiate(afterimagePrefab, playerSR.transform.parent);
 
-            var gs = ghost.AddComponent<SpriteRenderer>();
+        Transform t = ghost.transform;
+        Transform playerT = playerSR.transform;
+
+        t.localPosition = playerT.localPosition;
+        t.localRotation = playerT.localRotation;
+        t.localScale = playerT.localScale;
+
+        var srs = ghost.GetComponentsInChildren<SpriteRenderer>(true);
+        foreach (var gs in srs)
+        {
             gs.sprite = playerSR.sprite;
             gs.flipX = playerSR.flipX;
             gs.flipY = playerSR.flipY;
@@ -196,10 +167,10 @@ public class Dash : MonoBehaviour
             gs.sharedMaterial = playerSR.sharedMaterial;
             gs.color = afterColor;
         }
+
         spawnedGhosts.Add(ghost);
         StartCoroutine(FadeAndDestroy(ghost, LifeTime));
-    } // 플레이어의 현재 스프라이트를 기반으로 잔상 생성, 프리팹이 있으면 프리팹 사용, 없으면 런타임으로 SpriteRenderer만 있는 오브젝트 생성.
-      // 생성된 잔상은 리스트에 추가되고, FadeAndDestroy 코루틴으로 서서히 사라지면서 제거됨.
+    }  // 플레이어의 현재 스프라이트를 기반으로 잔상 생성, 생성된 잔상은 리스트에 추가되고, FadeAndDestroy 코루틴으로 서서히 사라지면서 제거됨.
 
     private IEnumerator FadeAndDestroy(GameObject ghost, float duration)
     {
