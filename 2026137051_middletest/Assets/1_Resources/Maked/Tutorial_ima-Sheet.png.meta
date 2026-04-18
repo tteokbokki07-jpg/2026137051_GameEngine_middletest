@@ -1,0 +1,280 @@
+fileFormatVersion: 2
+guid: 4c8fe28b8a2d4ea49a3b8e8b7247d746
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1397001547265091063
+    second: Tutorial_ima-Sheet_0
+  - first:
+      213: -6693681540451400939
+    second: Tutorial_ima-Sheet_1
+  - first:
+      213: -788339760709968134
+    second: Tutorial_ima-Sheet_2
+  - first:
+      213: 9053799658878219434
+    second: Tutorial_ima-Sheet_3
+  - first:
+      213: -5682550581722929405
+    second: Tutorial_ima-Sheet_4
+  - first:
+      213: 8647840361798108625
+    second: Tutorial_ima-Sheet_5
+  - first:
+      213: -8662728147311662492
+    second: Tutorial_ima-Sheet_6
+  - first:
+      213: 2492255565803865520
+    second: Tutorial_ima-Sheet_7
+  - first:
+      213: -5994620658803817057
+    second: Tutorial_ima-Sheet_8
+  - first:
+      213: 843449193498627245
+    second: Tutorial_ima-Sheet_9
+  - first:
+      213: -6016198644307617831
+    second: Tutorial_ima-Sheet_10
+  - first:
+      213: 5375833545999004172
+    second: Tutorial_ima-Sheet_11
+  - first:
+      213: 1411510680778169286
+    second: Tutorial_ima-Sheet_12
+  - first:
+      213: -7385575294308788557
+    second: Tutorial_ima-Sheet_13
+  - first:
+      213: -6648699538536194969
+    second: Tutorial_ima-Sheet_14
+  - first:
+      213: -8804749670786442232
+    second: Tutorial_ima-Sheet_15
+  - first:
+      213: -5940092089631213662
+    second: Tutorial_ima-Sheet_16
+  - first:
+      213: -6988026826485739462
+    second: Tutorial_ima-Sheet_17
+  - first:
+      213: -5956233212607772254
+    second: Tutorial_ima-Sheet_18
+  - first:
+      213: -4100889082525060691
+    second: Tutorial_ima-Sheet_19
+  - first:
+      213: 2515693650470798293
+    second: Tutorial_ima-Sheet_20
+  - first:
+      213: -1099132558477367446
+    second: Tutorial_ima-Sheet_21
+  - first:
+      213: 2504352663531076125
+    second: Tutorial_ima-Sheet_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 8192
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Tutorial_ima-Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 960
+        height: 960
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f5286f6185236310800000000000000
+      internalID: 1397001547265091063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial_ima-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 0
+        width: 960
+        height: 960
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5130ec58a144b13a0800000000000000
+      internalID: -6693681540451400939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial_ima-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 0
+        width: 960
+        height: 960
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afed0981a214f05f0800000000000000
+      internalID: -788339760709968134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial_ima-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 0
+        width: 960
+        height: 960
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa43df612de85ad70800000000000000
+      internalID: 9053799658878219434
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 2c8c492b98c057d4182cc3ff9488aa2d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":1.0},"gridSpriteSize":{"x":960.0,"y":960.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Tutorial_ima-Sheet_0: 1397001547265091063
+      Tutorial_ima-Sheet_1: -6693681540451400939
+      Tutorial_ima-Sheet_2: -788339760709968134
+      Tutorial_ima-Sheet_3: 9053799658878219434
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

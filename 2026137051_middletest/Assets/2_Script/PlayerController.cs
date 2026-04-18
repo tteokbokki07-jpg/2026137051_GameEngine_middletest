@@ -23,17 +23,19 @@ public class PlayerController : MonoBehaviour
     private float originalitemJump = 0f;
     private bool itemJumpBoosted = false;
     public bool itemSheld = false;    //아이템 무적
+    
+
 
     public Transform spawnpoint;
     public Transform checkpoint;
     public Animator animator;
     private PlayerController pc;
     private Rigidbody2D rb;
+    private Dash ds;
     private bool isGrounded;
     private float moveInput;
     private SpriteRenderer spriteRenderer;
     private bool facingRight = true;
-    public Dash ds;
 
     private void Awake()
     {
@@ -72,10 +74,10 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Jump_down", isJumpDown);
 
         ds = GetComponent<Dash>();
-        if (itemMove == false && ds.isBoost == false && moveSpeed >= 3.51)
+        if (itemMove == false && ds.isBoost == false && moveSpeed >= 3.56)
         {
             Debug.Log("이상한조건");
-            moveSpeed = 3.5f;
+            moveSpeed = 3.55f;
         }
     }
 
@@ -171,6 +173,7 @@ public class PlayerController : MonoBehaviour
                 Invoke(nameof(ResetJump), 10f);
             }
         }
+
     }
     void ResetSpeed()
     {

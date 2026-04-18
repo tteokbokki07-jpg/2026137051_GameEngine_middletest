@@ -15,15 +15,19 @@ public class EnemyTraceController : MonoBehaviour
 
     void Update()
     {
-        Vector2 direction = player.position - transform.position;
+        Vector2 direction = (Vector2)(player.position - transform.position);
         if (direction.magnitude > traceDistance)
             return;
+
+        // 플레이어 방향으로 Z축 회전 (스프라이트가 오른쪽을 바라본다고 가정)
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
 
         Vector2 directionNormalized = direction.normalized;
         RaycastHit2D[] his = Physics2D.RaycastAll(transform.position, directionNormalized, raycastDistance);
         Debug.DrawRay(transform.position, directionNormalized * raycastDistance, Color.red);
 
-        foreach(RaycastHit2D rHit in his)
+        foreach (RaycastHit2D rHit in his)
         {
             if (rHit.collider != null && rHit.collider.CompareTag("Obstacle"))
             {

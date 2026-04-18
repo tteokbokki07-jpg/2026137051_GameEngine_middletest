@@ -7,7 +7,7 @@ public class EnemyController : MonoBehaviour
     public float moveSpeed = 3f;
 
     private Rigidbody2D rb;
-    private bool isMovingRight = true;
+    public bool isMovingRight = true;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -17,12 +17,12 @@ public class EnemyController : MonoBehaviour
         if (isMovingRight)
         {
             rb.linearVelocity = new Vector2(moveSpeed, rb.linearVelocity.y);
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new Vector3(-0.7f, 0.7f, 0.7f);
         }
-        else
+        else if (!isMovingRight)
         {
             rb.linearVelocity = new Vector2(-moveSpeed, rb.linearVelocity.y);
-            transform.localScale = new Vector3(1, 1, 1);
+            transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
         }
     }
 

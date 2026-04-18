@@ -13,6 +13,7 @@ TagManager:
   - Enemy
   - Boundary
   - Obstacle
+  - ChaseTrigger
   layers:
   - Default
   - TransparentFX
