@@ -26089,6 +26089,7 @@ GameObject:
   - component: {fileID: 1962107810}
   - component: {fileID: 1962107809}
   - component: {fileID: 1962107812}
+  - component: {fileID: 1962107813}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -26110,11 +26111,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineFollow
   TrackerSettings:
     BindingMode: 3
-    PositionDamping: {x: 0.5, y: 0.2, z: 1}
+    PositionDamping: {x: 1, y: 0.3, z: 1}
     AngularDampingMode: 0
     RotationDamping: {x: 0, y: 0, z: 1}
     QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 0.4, z: -10}
+  FollowOffset: {x: 1, y: 0.4, z: -10}
 --- !u!114 &1962107810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26167,7 +26168,7 @@ Transform:
   m_GameObject: {fileID: 1962107807}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.4, z: -10}
+  m_LocalPosition: {x: 1, y: 0.4, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -26186,6 +26187,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineRotateWithFollowTarget
   Damping: 0
+--- !u!114 &1962107813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1962107807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbdd581b634c47145ab725a0f08ab82b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CinemachineSmooth
+  cam: {fileID: 1962107810}
+  defaultOffset: {x: 0, y: 0.4, z: -10}
+  LeftmoveOffset: {x: -1.25, y: 0.4, z: -10}
+  RightmoveOffset: {x: 1.25, y: 0.4, z: -10}
+  smoothSpeed: 2
 --- !u!1 &1983121739
 GameObject:
   m_ObjectHideFlags: 0
@@ -33174,7 +33192,7 @@ Transform:
   m_GameObject: {fileID: 247328869452049849}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.4, z: -10}
+  m_LocalPosition: {x: 1, y: 0.4, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -33544,7 +33562,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
