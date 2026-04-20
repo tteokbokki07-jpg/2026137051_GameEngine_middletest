@@ -79,6 +79,11 @@ public class PlayerController : MonoBehaviour
             Debug.Log("이상한조건");
             moveSpeed = 3.55f;
         }
+        if (jumpForce <= 4.49)
+        {
+            Debug.Log("이상한조건2");
+            jumpForce = 4.5f;
+        }
     }
 
     public void OnMove(InputValue value)
@@ -123,6 +128,12 @@ public class PlayerController : MonoBehaviour
             Vector3 newPos = spawnpoint.position;
             newPos.z = transform.position.z; // z값은 현재 플레이어의 z값 유지
             transform.position = newPos;
+            ResetJump();
+            ResetSpeed();
+            CancelInvoke(nameof(ResetJump));
+            CancelInvoke(nameof(ResetSpeed));
+
+
             return;
         }
         else if (collision.CompareTag("Respawn") && itemSheld)
