@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     [Header("Item")]
     public float itemMovevalue = 1.5f; //적용할 배율(1.5 : 50%)
     public bool itemMove = false;    //아이템 이동속도 배율 적용
+    public ParticleSystem MoveP;
+    public ParticleSystem JumpP;
     private float originalitemMoveSpeed = 0f;
     private bool itemMoveBoosted = false;
 
@@ -23,9 +25,8 @@ public class PlayerController : MonoBehaviour
     private float originalitemJump = 0f;
     private bool itemJumpBoosted = false;
     public bool itemSheld = false;    //아이템 무적
+    public GameObject Sheldobj;
     
-
-
     public Transform spawnpoint;
     public Transform checkpoint;
     public Animator animator;
@@ -45,13 +46,8 @@ public class PlayerController : MonoBehaviour
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         // 스프라이트의 flipX 상태를 기준으로 초기 방향 설정
         facingRight = spriteRenderer == null ? true : !spriteRenderer.flipX;
+        Sheldobj.SetActive(false);
     }
-    private void SetFacingRight(bool right)
-    {
-        facingRight = right;
-        spriteRenderer.flipX = !right;
-    }
-
     void Update()
     {
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
@@ -79,10 +75,20 @@ public class PlayerController : MonoBehaviour
             Debug.Log("이상한조건");
             moveSpeed = 3.55f;
         }
+        if (moveSpeed <= 3.54)
+        {
+            moveSpeed = 3.55f;
+        }
         if (jumpForce <= 4.49)
         {
             Debug.Log("이상한조건2");
-            jumpForce = 4.5f;
+            jumpForce = 4.55f;
+        }
+        if(moveSpeed == 0 && jumpForce == 0)
+        {
+            Debug.Log("이상한조건3");
+            moveSpeed = 3.55f;
+            jumpForce = 4.55f;
         }
     }
 
@@ -115,12 +121,21 @@ public class PlayerController : MonoBehaviour
             Destroy(collision.gameObject);
         }
 
-        if (collision.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy") && !itemSheld)
         {
             Vector3 newPos = spawnpoint.position;
             newPos.z = transform.position.z; // z값은 현재 플레이어의 z값 유지
             transform.position = newPos;
+            ResetJump();
+            ResetSpeed();
+            CancelInvoke(nameof(ResetJump));
+            CancelInvoke(nameof(ResetSpeed));
             return;
+        }
+        else if (collision.CompareTag("Enemy") && itemSheld)
+        {
+            itemSheld = false;
+            Sheldobj.SetActive(false);
         }
         // Respawn: 플레이어를 spawnpoint로 이동
         if (collision.CompareTag("Respawn") && !itemSheld)
@@ -132,13 +147,12 @@ public class PlayerController : MonoBehaviour
             ResetSpeed();
             CancelInvoke(nameof(ResetJump));
             CancelInvoke(nameof(ResetSpeed));
-
-
             return;
         }
         else if (collision.CompareTag("Respawn") && itemSheld)
         {
             itemSheld = false;
+            Sheldobj.SetActive(false);
         }
 
         // Checkpoint: spawnpoint를 체크포인트 위치로 이동
@@ -155,7 +169,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Item_Sheld");
             itemSheld = true;
-
+            Sheldobj.SetActive(true);
         }
 
         if (collision.CompareTag("Item_Speed"))
@@ -168,6 +182,7 @@ public class PlayerController : MonoBehaviour
                 originalitemMoveSpeed = pc.moveSpeed;
                 pc.moveSpeed = originalitemMoveSpeed * itemMovevalue;
                 itemMoveBoosted = true;
+                MoveP.Play();
                 Invoke(nameof(ResetSpeed), 10f);
             }
         }
@@ -181,6 +196,7 @@ public class PlayerController : MonoBehaviour
                 originalitemJump = pc.jumpForce;
                 pc.jumpForce = originalitemJump * itemJumpvalue;
                 itemJumpBoosted = true;
+                JumpP.Play();
                 Invoke(nameof(ResetJump), 10f);
             }
         }
@@ -191,12 +207,14 @@ public class PlayerController : MonoBehaviour
         itemMove = false;
         itemMoveBoosted = false;
         pc.moveSpeed = originalitemMoveSpeed;
+        MoveP.Stop();
     }
     void ResetJump()
     {
         itemJump = false;
         itemJumpBoosted = false;
         pc.jumpForce = originalitemJump;
+        JumpP.Stop();
     }
 }
 
