@@ -72,7 +72,6 @@ public class PlayerController : MonoBehaviour
         ds = GetComponent<Dash>();
         if (itemMove == false && ds.isBoost == false && moveSpeed >= 3.56)
         {
-            Debug.Log("이상한조건");
             moveSpeed = 3.55f;
         }
         if (moveSpeed <= 3.54)
@@ -81,12 +80,10 @@ public class PlayerController : MonoBehaviour
         }
         if (jumpForce <= 4.49)
         {
-            Debug.Log("이상한조건2");
             jumpForce = 4.55f;
         }
         if(moveSpeed == 0 && jumpForce == 0)
         {
-            Debug.Log("이상한조건3");
             moveSpeed = 3.55f;
             jumpForce = 4.55f;
         }

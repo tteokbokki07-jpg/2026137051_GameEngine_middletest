@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/0_Scenes/Making_3.unity
     guid: 42e7268c564fa8d41a0e84f62edab4ac
+  - enabled: 1
+    path: Assets/0_Scenes/Making_4.unity
+    guid: a46e17809cb7baa418fac1b42481bf13
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
