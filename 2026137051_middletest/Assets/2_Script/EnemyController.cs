@@ -10,7 +10,7 @@ public class EnemyController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
     }
-    void Update()
+    void FixedUpdate()
     {
         if (isMovingRight)
         {
