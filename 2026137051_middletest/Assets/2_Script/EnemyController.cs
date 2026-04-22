@@ -1,6 +1,4 @@
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class EnemyController : MonoBehaviour
 {
