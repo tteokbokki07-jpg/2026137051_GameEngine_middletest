@@ -68,20 +68,28 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Jump_down", isJumpDown);
 
         ds = GetComponent<Dash>();
+        if (itemMove == true && ds.isBoost == false)
+        {
+            moveSpeed = 4.615f;
+        }
         if (itemMove == false && ds.isBoost == false && moveSpeed >= 3.56)
         {
+            Debug.Log(1);
             moveSpeed = 3.55f;
         }
         if (moveSpeed <= 3.54)
         {
+            Debug.Log(2);
             moveSpeed = 3.55f;
         }
         if (jumpForce <= 4.49)
         {
+            Debug.Log(3);
             jumpForce = 4.55f;
         }
         if(moveSpeed == 0 && jumpForce == 0)
         {
+            Debug.Log(4);
             moveSpeed = 3.55f;
             jumpForce = 4.55f;
         }
