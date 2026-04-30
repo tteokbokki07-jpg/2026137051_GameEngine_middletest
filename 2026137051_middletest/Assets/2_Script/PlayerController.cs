@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -36,6 +37,8 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private bool facingRight = true;
 
+    float score;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -45,6 +48,7 @@ public class PlayerController : MonoBehaviour
         // 스프라이트의 flipX 상태를 기준으로 초기 방향 설정
         facingRight = spriteRenderer == null ? true : !spriteRenderer.flipX;
         Sheldobj.SetActive(false);
+        score = 0f;
     }
     void Update()
     {
@@ -66,8 +70,11 @@ public class PlayerController : MonoBehaviour
         bool isJumpDown = !isGrounded && vertical < -vertThreshold;              // 하강 중
         animator.SetBool("Jump_up", isJumpUp);
         animator.SetBool("Jump_down", isJumpDown);
-
         ds = GetComponent<Dash>();
+        if (itemMove == false && ds.isBoost == true && moveSpeed == 3.55)
+        {
+            moveSpeed = 6.2125f;
+        }
         if (itemMove == true && ds.isBoost == false)
         {
             moveSpeed = 4.615f;
@@ -115,12 +122,16 @@ public class PlayerController : MonoBehaviour
         if (collision.CompareTag("Finish") && itemMission >= missionCount)
         {
             collision.GetComponent<Goalpoint>().MoveToNextLevel();
+            //점수
+            score += 10f;
+            HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
         }
 
         if (collision.CompareTag("Item_Mission"))
         {
             Debug.Log("Item_Mission");
             itemMission++;
+            score += 5f;
             Destroy(collision.gameObject);
         }
 
