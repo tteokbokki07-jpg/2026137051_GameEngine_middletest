@@ -13,9 +13,14 @@ public static class HighScore
     {
         if (newScore <= Load(stage))
             return;
+
         PlayerPrefs.SetInt(KEY + "_" + stage, newScore);
         PlayerPrefs.Save();
     }
-
-
+    // 특정 스테이지 최고기록 초기화
+    public static void Reset(int stage)
+    {
+        PlayerPrefs.DeleteKey(KEY + "_" + stage);
+        PlayerPrefs.Save();
+    }
 }

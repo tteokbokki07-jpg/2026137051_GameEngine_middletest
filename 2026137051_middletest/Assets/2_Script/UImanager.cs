@@ -59,7 +59,6 @@ public class UImanager : MonoBehaviour
         Time.timeScale = 1;
         isPaused = false;
     }
-
     public void Stage1()
     {
         SceneManager.LoadScene("Making_1");
