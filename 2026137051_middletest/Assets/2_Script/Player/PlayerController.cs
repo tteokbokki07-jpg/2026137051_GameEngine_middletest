@@ -25,12 +25,17 @@ public class PlayerController : MonoBehaviour
     private float originalitemJump = 0f;
     private bool itemJumpBoosted = false;
     public bool itemSheld = false;    //아이템 무적
+    public bool groundDashSheld = false;    //바닥대쉬 무적
     public GameObject Sheldobj;
     public Animator SheldAnimator;
-    
+
+    private bool isInvincible;
+
     public Transform spawnpoint;
     public Transform checkpoint;
     public Animator animator;
+    public bool canMove = true; //조작 여부
+
     private PlayerController pc;
     private Rigidbody2D rb;
     private Dash ds;
@@ -56,6 +61,8 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
+        isInvincible = itemSheld || groundDashSheld; // 무적 상태 판단
+
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
         if (moveInput < 0)
@@ -126,9 +133,7 @@ public class PlayerController : MonoBehaviour
         if (collision.CompareTag("Finish") && itemMission >= missionCount)
         {
             collision.GetComponent<Goalpoint>().MoveToNextLevel();
-            //점수
-            score += 10f;
-            //HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
+            score += 10f; //점수
             StageResultSaver.SaveStage(SceneManager.GetActiveScene().buildIndex, (int)score);
         }
 
@@ -138,36 +143,6 @@ public class PlayerController : MonoBehaviour
             itemMission++;
             score += collision.GetComponent<ItemObject>().GetPoint();
             Destroy(collision.gameObject);
-        }
-
-        if (collision.CompareTag("Enemy") && !itemSheld)
-        {
-            Vector3 newPos = spawnpoint.position;
-            newPos.z = transform.position.z; // z값은 현재 플레이어의 z값 유지
-            transform.position = newPos;
-            ResetJump();
-            ResetSpeed();
-            CancelInvoke(nameof(ResetJump));
-            CancelInvoke(nameof(ResetSpeed));
-            score -= 20;
-            return;
-        }
-        else if (collision.CompareTag("Enemy") && itemSheld)
-        {
-            StartCoroutine(HideShield());
-            SheldAnimator.SetTrigger("Break");
-        }
-        // Respawn: 플레이어를 spawnpoint로 이동
-        if (collision.CompareTag("Respawn"))
-        {
-            Vector3 newPos = spawnpoint.position;
-            newPos.z = transform.position.z; // z값은 현재 플레이어의 z값 유지
-            transform.position = newPos;
-            ResetJump();
-            ResetSpeed();
-            CancelInvoke(nameof(ResetJump));
-            CancelInvoke(nameof(ResetSpeed));
-            return;
         }
 
         // Checkpoint: spawnpoint를 체크포인트 위치로 이동
@@ -217,6 +192,39 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Enemy") && !isInvincible)
+        {
+            Vector3 newPos = spawnpoint.position;
+            newPos.z = transform.position.z; // z값은 현재 플레이어의 z값 유지
+            transform.position = newPos;
+            ResetJump();
+            ResetSpeed();
+            CancelInvoke(nameof(ResetJump));
+            CancelInvoke(nameof(ResetSpeed));
+            score -= 20;
+            return;
+        }
+        else if (collision.CompareTag("Enemy") && itemSheld)
+        {
+            StartCoroutine(HideShield());
+            SheldAnimator.SetTrigger("Break");
+        }
+        // Respawn: 플레이어를 spawnpoint로 이동
+        if (collision.CompareTag("Respawn"))
+        {
+            Vector3 newPos = spawnpoint.position;
+            newPos.z = transform.position.z; // z값은 현재 플레이어의 z값 유지
+            transform.position = newPos;
+            ResetJump();
+            ResetSpeed();
+            CancelInvoke(nameof(ResetJump));
+            CancelInvoke(nameof(ResetSpeed));
+            return;
+        }
+    }
     void ResetSpeed()
     {
         itemMove = false;
@@ -233,7 +241,7 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator HideShield()
     {
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.5f);
 
         itemSheld = false;
         Sheldobj.SetActive(false);

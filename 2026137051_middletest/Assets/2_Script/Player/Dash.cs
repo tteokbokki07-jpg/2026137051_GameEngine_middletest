@@ -22,6 +22,9 @@ public class Dash : MonoBehaviour
     public float boostMovevalue = 1.5f; //적용할 배율(1.5 : 50%)
     public bool isBoost = false; //대시를 하고있는가
 
+    private bool groundDashActive = false; //바닥 대쉬 감지
+    private float groundDashStoredMoveSpeed = 0f;
+
     private PlayerInput playerInput;
     private InputAction sprintAction;
     private PlayerController pc;
@@ -68,6 +71,12 @@ public class Dash : MonoBehaviour
             {
                 airJumpUsed = false;
                 isBoost = false;
+                // 바닥에서의 대시로 인해 공중에 떠있던 상태가 종료되면 좌우 조작 복구 및 쉴드 비활성화
+                if (groundDashActive)
+                {
+                    StartCoroutine(GroundDashCanControll());
+                }
+
                 RestoreMoveSpeedIfNeeded();
             }
         }
@@ -85,10 +94,29 @@ public class Dash : MonoBehaviour
         bool grounded = false;
         if (pc.groundCheck != null)
             grounded = Physics2D.OverlapCircle(pc.groundCheck.position, 0.2f, pc.groundLayer);
-        // 바닥에서는 대쉬 불가
+        // 바닥에서는 공중 대쉬 불가
         if (grounded)
         {
             animator.ResetTrigger(dashTriggerName);
+            animator.SetTrigger("Dash_upg");
+
+            // 바닥 대쉬: 위로 체공시키고 좌우 조작을 잠금, 착지 시 복구
+            if (pc != null && rb != null && !groundDashActive)
+            {
+                groundDashActive = true;
+                // 이동속도 저장 후 0으로 만들어 좌우 조작을 불가하게 함
+                groundDashStoredMoveSpeed = pc.moveSpeed;
+                pc.moveSpeed = 0f;
+
+                // 바닥 대쉬로 인한 임시 쉴드 활성화
+                pc.groundDashSheld = true;
+
+                // 위로 체공 구현: 수직 속도 초기화 후 점프력 적용
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+                rb.AddForce(Vector2.up * pc.jumpForce, ForceMode2D.Impulse);
+                airJumpUsed = true;
+            }
+
             return;
         }
         // 공중에서 한 번만 동작
@@ -111,7 +139,13 @@ public class Dash : MonoBehaviour
             afterCoroutine = StartCoroutine(AfterimageUntilLandCoroutine());
         }
     }
-    
+    IEnumerator GroundDashCanControll()
+    {
+        yield return new WaitForSeconds(0.5f);
+        groundDashActive = false;
+        pc.groundDashSheld = false;
+    }
+
     private IEnumerator AfterimageUntilLandCoroutine()
     {
         float timer = 0f;
@@ -147,7 +181,7 @@ public class Dash : MonoBehaviour
             StopCoroutine(afterCoroutine);
             afterCoroutine = null;
         }
-    }
+    } // 잔상 생성 코루틴 중지 메서드
 
     private void SpawnAfterimageOnce()
     {
