@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour
     private bool itemJumpBoosted = false;
     public bool itemSheld = false;    //아이템 무적
     public GameObject Sheldobj;
+    public Animator SheldAnimator;
     
     public Transform spawnpoint;
     public Transform checkpoint;
@@ -49,6 +51,8 @@ public class PlayerController : MonoBehaviour
         facingRight = spriteRenderer == null ? true : !spriteRenderer.flipX;
         Sheldobj.SetActive(false);
         score = 0f;
+
+        
     }
     void Update()
     {
@@ -71,14 +75,6 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Jump_up", isJumpUp);
         animator.SetBool("Jump_down", isJumpDown);
         ds = GetComponent<Dash>();
-        if (itemMove == false && ds.isBoost == true && moveSpeed == 3.55)
-        {
-            moveSpeed = 6.2125f;
-        }
-        if (itemMove == true && ds.isBoost == false)
-        {
-            moveSpeed = 4.615f;
-        }
         if (itemMove == false && ds.isBoost == false && moveSpeed >= 3.56)
         {
             Debug.Log(1);
@@ -99,6 +95,14 @@ public class PlayerController : MonoBehaviour
             Debug.Log(4);
             moveSpeed = 3.55f;
             jumpForce = 4.55f;
+        }
+        if (itemMove == false && ds.isBoost == true && moveSpeed == 3.55)
+        {
+            moveSpeed = 6.2125f;
+        }
+        if (itemMove == true && ds.isBoost == false)
+        {
+            moveSpeed = 4.615f;
         }
     }
 
@@ -145,15 +149,16 @@ public class PlayerController : MonoBehaviour
             ResetSpeed();
             CancelInvoke(nameof(ResetJump));
             CancelInvoke(nameof(ResetSpeed));
+            score -= 20;
             return;
         }
         else if (collision.CompareTag("Enemy") && itemSheld)
         {
-            itemSheld = false;
-            Sheldobj.SetActive(false);
+            StartCoroutine(HideShield());
+            SheldAnimator.SetTrigger("Break");
         }
         // Respawn: 플레이어를 spawnpoint로 이동
-        if (collision.CompareTag("Respawn") && !itemSheld)
+        if (collision.CompareTag("Respawn"))
         {
             Vector3 newPos = spawnpoint.position;
             newPos.z = transform.position.z; // z값은 현재 플레이어의 z값 유지
@@ -163,12 +168,6 @@ public class PlayerController : MonoBehaviour
             CancelInvoke(nameof(ResetJump));
             CancelInvoke(nameof(ResetSpeed));
             return;
-        }
-        else if (collision.CompareTag("Respawn") && itemSheld)
-        {
-            itemSheld = false;
-            Sheldobj.SetActive(false);
-            score -= 20;
         }
 
         // Checkpoint: spawnpoint를 체크포인트 위치로 이동
@@ -231,6 +230,13 @@ public class PlayerController : MonoBehaviour
         itemJumpBoosted = false;
         pc.jumpForce = originalitemJump;
         JumpP.Stop();
+    }
+    IEnumerator HideShield()
+    {
+        yield return new WaitForSeconds(0.3f);
+
+        itemSheld = false;
+        Sheldobj.SetActive(false);
     }
 }
 
