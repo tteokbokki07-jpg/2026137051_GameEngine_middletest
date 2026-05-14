@@ -107,6 +107,8 @@ public class Dash : MonoBehaviour
                 // 이동속도 저장 후 0으로 만들어 좌우 조작을 불가하게 함
                 groundDashStoredMoveSpeed = pc.moveSpeed;
                 pc.moveSpeed = 0f;
+                SoundManager.instance.PlaySFX(SoundManager.instance.DashClip, 0.5f, 1.2f);
+                SoundManager.instance.PlaySFX(SoundManager.instance.JumpClip, 0.1f,1.5f);
 
                 // 바닥 대쉬로 인한 임시 쉴드 활성화
                 pc.groundDashSheld = true;
@@ -132,6 +134,8 @@ public class Dash : MonoBehaviour
                 originalMoveSpeed = pc.moveSpeed;
                 pc.moveSpeed = originalMoveSpeed * boostMovevalue;
                 moveSpeedBoosted = true;
+                SoundManager.instance.PlaySFX(SoundManager.instance.DashClip, 0.5f, 1.75f);
+                SoundManager.instance.PlaySFX(SoundManager.instance.JumpClip, 0.1f,1.5f);
             }
 
             // 대시 사용 후 착지할 때까지 잔상 생성

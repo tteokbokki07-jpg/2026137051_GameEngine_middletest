@@ -27,6 +27,7 @@ public class EnemyChaseTrigger : MonoBehaviour
         {
             isChace = true;
             ChaceEnemy.SetActive(true);
+            SoundManager.instance.PlaySFX(SoundManager.instance.EnemyStartClip, 0.7f, 1.5f);
 
             Vector3 target = chaseTriggerTF.position;
             Vector3 enemyPos = ChaceEnemy.transform.position;
@@ -47,6 +48,7 @@ public class EnemyChaseTrigger : MonoBehaviour
         {
             isSlowChace = true;
             slowChaceEnemy.SetActive(true);
+            SoundManager.instance.PlaySFX(SoundManager.instance.EnemyStartClip, 0.7f, 1.0f);
 
             Vector3 targetS = slowchaseTriggerTF.position;
             Vector3 slowPos = slowChaceEnemy.transform.position;
@@ -72,6 +74,7 @@ public class EnemyChaseTrigger : MonoBehaviour
         {
             isChace = false;
             if (ChaceEnemy != null) ChaceEnemy.SetActive(false);
+
         }
 
         // slowchaseTriggerTF에서 나갔을 때 해당 적 비활성화

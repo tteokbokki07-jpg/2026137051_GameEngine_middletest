@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     public bool groundDashSheld = false;    //바닥대쉬 무적
     public GameObject Sheldobj;
     public Animator SheldAnimator;
+    Coroutine shieldCoroutine;
 
     private bool isInvincible;
 
@@ -43,9 +44,7 @@ public class PlayerController : MonoBehaviour
     private float moveInput;
     private SpriteRenderer spriteRenderer;
     private bool facingRight = true;
-
     float score;
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -56,24 +55,19 @@ public class PlayerController : MonoBehaviour
         facingRight = spriteRenderer == null ? true : !spriteRenderer.flipX;
         Sheldobj.SetActive(false);
         score = 0f;
-
-        
     }
     void Update()
     {
         isInvincible = itemSheld || groundDashSheld; // 무적 상태 판단
-
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
         if (moveInput < 0)
             transform.localScale = new Vector3(-1, 1, 1);
         else if (moveInput > 0)
             transform.localScale = new Vector3(1, 1, 1);
-
         // 이동상태 판단 : 실제 속도 기준 판정
         bool isMoving = Mathf.Abs(rb.linearVelocity.x) > 0.01f && isGrounded;
         animator.SetBool("Move", isMoving);
-
         // 점프상태 판단 (상승 / 정점 / 하강 분리)
         const float vertThreshold = 0.01f;
         float vertical = rb.linearVelocity.y;
@@ -125,6 +119,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            SoundManager.instance.PlaySFX(SoundManager.instance.JumpClip, 0.175f,1.5f);
         }
     }
 
@@ -136,15 +131,13 @@ public class PlayerController : MonoBehaviour
             score += 10f; //점수
             StageResultSaver.SaveStage(SceneManager.GetActiveScene().buildIndex, (int)score);
         }
-
         if (collision.CompareTag("Item_Mission"))
         {
-            Debug.Log("Item_Mission");
             itemMission++;
             score += collision.GetComponent<ItemObject>().GetPoint();
             Destroy(collision.gameObject);
+            SoundManager.instance.PlaySFX(SoundManager.instance.ItemPowerupClip, 0.8f, 1.5f);
         }
-
         // Checkpoint: spawnpoint를 체크포인트 위치로 이동
         if (collision.CompareTag("Checkpoint"))
         {
@@ -154,17 +147,8 @@ public class PlayerController : MonoBehaviour
             spawnpoint.position = newPos;
             return;
         }
-
-        if (collision.CompareTag("Item_Sheld"))
-        {
-            Debug.Log("Item_Sheld");
-            itemSheld = true;
-            Sheldobj.SetActive(true);
-        }
-
         if (collision.CompareTag("Item_Speed"))
         {
-            Debug.Log("Item_Speed");
             itemMove = true;
             // 이동속도 상승 옵션
             if (itemMove && pc != null && !itemMoveBoosted)
@@ -175,11 +159,11 @@ public class PlayerController : MonoBehaviour
                 MoveP.Play();
                 Invoke(nameof(ResetSpeed), 10f);
             }
+            SoundManager.instance.PlaySFX(SoundManager.instance.ItemClip, 0.4f, 2f);
+            SoundManager.instance.PlaySFX(SoundManager.instance.ItemPowerupClip, 0.4f, 1.5f);
         }
-
         if (collision.CompareTag("Item_Jump"))
         {
-            Debug.Log("Item_Jump");
             itemJump = true;
             if (itemJump && pc != null && !itemJumpBoosted)
             {
@@ -189,12 +173,39 @@ public class PlayerController : MonoBehaviour
                 JumpP.Play();
                 Invoke(nameof(ResetJump), 10f);
             }
+            SoundManager.instance.PlaySFX(SoundManager.instance.ItemClip, 0.4f, 2f);
+            SoundManager.instance.PlaySFX(SoundManager.instance.ItemPowerupClip, 0.4f, 0.7f);
         }
-
+        if (collision.CompareTag("Enemy") && !isInvincible)
+        {
+            SoundManager.instance.PlaySFX(SoundManager.instance.ErrorEnemyClip, 0.2f, 1.0f);
+        }
+        else if (collision.CompareTag("Enemy") && itemSheld && !groundDashSheld)
+        {
+            SoundManager.instance.PlaySFX(SoundManager.instance.ErrorEnemyClip, 0.2f, 1.0f);
+            SoundManager.instance.PlaySFX(SoundManager.instance.ItemClip, 0.4f, 4f);
+        }
+        if (collision.CompareTag("Respawn"))
+        {
+            SoundManager.instance.PlaySFX(SoundManager.instance.ErrorEnemyClip, 0.2f, 1.0f);
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
+        if (collision.CompareTag("Item_Sheld"))
+        {
+            if(!itemSheld)
+                SoundManager.instance.PlaySFX(SoundManager.instance.ItemClip, 0.4f, 2f);
+            itemSheld = true;
+            Sheldobj.SetActive(true);
+
+            // 기존 코루틴 취소
+            if (shieldCoroutine != null)
+            {
+                StopCoroutine(shieldCoroutine);
+            }
+        }
         if (collision.CompareTag("Enemy") && !isInvincible)
         {
             Vector3 newPos = spawnpoint.position;
@@ -207,7 +218,7 @@ public class PlayerController : MonoBehaviour
             score -= 20;
             return;
         }
-        else if (collision.CompareTag("Enemy") && itemSheld)
+        else if (collision.CompareTag("Enemy") && itemSheld && !groundDashSheld)
         {
             StartCoroutine(HideShield());
             SheldAnimator.SetTrigger("Break");
@@ -242,9 +253,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator HideShield()
     {
         yield return new WaitForSeconds(0.5f);
-
         itemSheld = false;
         Sheldobj.SetActive(false);
     }
 }
-
