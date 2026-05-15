@@ -13,6 +13,9 @@ public class Skill_Attack : MonoBehaviour
     public LayerMask targetLayer = ~0; // all by default
     [Tooltip("플레이어가 보스에게 데미지를 줄 때 회복할 HP 양")]
     public float healOnHit = 0.5f;
+    [Header("Overrides")]
+    [Tooltip("Assign the boss Collider2D in the inspector to target a specific boss hitbox. If left null, tag-based detection is used.")]
+    public Collider2D bossCollider;
 
     // 마지막 공격 시각
     private float lastAttackTime = -Mathf.Infinity;
@@ -77,13 +80,29 @@ public class Skill_Attack : MonoBehaviour
                 continue;
             }
 
-            // 타겟은 태그 'Boss'인 개체에만 데미지 적용
-            bool isBoss = IsAncestorTaggedBoss(col.transform) || IsAncestorTaggedBoss(hp.transform);
-
-            if (!isBoss)
+            // If a bossCollider is assigned in inspector, require the hit to be related to that collider
+            if (bossCollider != null)
             {
-                Debug.Log($"   - skipped (not Boss). colliderTag={col.tag}, hpObjectTag={hp.gameObject.tag}");
-                continue;
+                bool related = false;
+                if (col == bossCollider) related = true;
+                else if (col.transform.IsChildOf(bossCollider.transform)) related = true;
+                else if (bossCollider.transform.IsChildOf(col.transform)) related = true;
+
+                if (!related)
+                {
+                    Debug.Log($"   - skipped (not assigned boss collider). hit={col.name}");
+                    continue;
+                }
+            }
+            else
+            {
+                // fallback: tag-based detection
+                bool isBoss = IsAncestorTaggedBoss(col.transform) || IsAncestorTaggedBoss(hp.transform);
+                if (!isBoss)
+                {
+                    Debug.Log($"   - skipped (not Boss). colliderTag={col.tag}, hpObjectTag={hp.gameObject.tag}");
+                    continue;
+                }
             }
 
             hp.TakeDamage(attackDamage);

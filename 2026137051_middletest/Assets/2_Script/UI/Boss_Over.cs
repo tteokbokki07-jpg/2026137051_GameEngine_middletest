@@ -20,6 +20,8 @@ public class Boss_Over : MonoBehaviour
     public UnityEvent onPlayerDeath;
     public UnityEvent onBossDeath;
 
+    public GameObject Boss;
+
     // internal state to ensure events run once
     private bool playerDeathTriggered = false;
     private bool bossDeathTriggered = false;
@@ -102,5 +104,7 @@ public class Boss_Over : MonoBehaviour
             pos.y = 0f;
             player.transform.position = pos;
         }
+        if (Boss != null)
+            Boss.SetActive(false);
     }
 }

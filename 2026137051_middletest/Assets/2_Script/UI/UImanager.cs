@@ -85,7 +85,7 @@ public class UImanager : MonoBehaviour
     }
     public void Stage5()
     {
-        SceneManager.LoadScene("Making_5");
+        SceneManager.LoadScene("Ending");
         Time.timeScale = 1;
         isPaused = false;
     }

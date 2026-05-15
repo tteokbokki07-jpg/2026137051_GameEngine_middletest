@@ -32,6 +32,8 @@ public class Skill_AI : MonoBehaviour
     private HPBar HPBar;
     private PlayerController pc;
     public float DashSpeed = 7.5f;
+    [Tooltip("플레이어에게 가할 넉백 힘(임펄스)")]
+    public float knockbackForce = 5f;
     private bool isDashing = false;
     private bool stopDash = false;
     private Transform player;
@@ -99,7 +101,7 @@ public class Skill_AI : MonoBehaviour
             //    BM.canMove = false;
             //    StartCoroutine(MissileSkillActive());
             //}
-            if (!dashTriggered && DashTime >= DashThreshold && playerDistance >= 3.5f)
+            if (!dashTriggered && DashTime >= DashThreshold && playerDistance >= 1.5f)
             {
                 if (animator != null && !string.IsNullOrEmpty(DashTriggerName))
                     animator.SetTrigger(DashTriggerName);
@@ -110,10 +112,25 @@ public class Skill_AI : MonoBehaviour
         }
         if (collision.CompareTag("Player") && SkillDamage)
         {
-            // SkillBox 안에 있을 때만 플레이어 체력 감소
-            if (SkillBox != null && SkillBox.enabled && SkillBox.OverlapPoint(collision.transform.position))
+            // Damage only if the boss's SkillBox collider is actually overlapping the player's position.
+            playerPos = collision.transform.position;
+            bool skillOverlap = false;
+            if (SkillBox != null && SkillBox.enabled)
             {
-                Debug.Log("Player hit by skill!");
+                var cols = Physics2D.OverlapPointAll(playerPos);
+                foreach (var c in cols)
+                {
+                    if (c == SkillBox)
+                    {
+                        skillOverlap = true;
+                        break;
+                    }
+                }
+            }
+
+            if (skillOverlap)
+            {
+                Debug.Log("Player hit by skill (SkillBox overlap)!");
                 // 플레이어의 child로 Health가 붙어있음. 해당 오브젝트에서 HPBar 컴포넌트를 찾음
                 Transform healthT = collision.transform.Find("Health");
                 HPBar hpBar = null;
@@ -130,7 +147,24 @@ public class Skill_AI : MonoBehaviour
 
                 if (hpBar != null)
                 {
-                    hpBar.TakeDamage(3f);
+                    // 이전 HP를 저장하고 실제로 데미지가 적용되었는지 확인
+                    float prevHp = hpBar.currentHP;
+                    hpBar.TakeDamage(4f);
+                    if (hpBar.currentHP < prevHp)
+                    {
+                        // 넉백 적용: 플레이어를 보스에서 반대 방향으로 밀어냄
+                        Rigidbody2D playerRb = collision.GetComponent<Rigidbody2D>();
+                        if (playerRb == null && collision.transform.parent != null)
+                            playerRb = collision.transform.parent.GetComponent<Rigidbody2D>();
+
+                        if (playerRb != null)
+                        {
+                        // 보스의 반대 방향(좌우)으로 밀어내고 약간 위로 띄움
+                        float horiz = Mathf.Sign(collision.transform.position.x - transform.position.x);
+                        Vector2 knockDir = new Vector2(horiz, 0.5f).normalized;
+                        playerRb.AddForce(knockDir * knockbackForce, ForceMode2D.Impulse);
+                        }
+                    }
                 }
                 else
                 {
@@ -141,9 +175,11 @@ public class Skill_AI : MonoBehaviour
     }
     IEnumerator OneFrameDamage()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
+        Debug.Log("데미지시작");
         SkillDamage = true;
-        yield return new WaitForSeconds(1.51f);
+        yield return new WaitForSeconds(1.05f);
+        Debug.Log("데미지끝");
         SkillDamage = false;
     }
     IEnumerator LandSkillActive()
@@ -153,6 +189,15 @@ public class Skill_AI : MonoBehaviour
         LandTime = 0;
         BM.canMove = true;
         Land_powerup ++;
+        if (DashTime <= 7)
+        {
+            DashTime += 1.5f;
+            if (DashTime >= 8)
+            {
+                DashTime = 7.9f;
+            }
+        }
+            
     }
     //IEnumerator MissileSkillActive()
     //{
